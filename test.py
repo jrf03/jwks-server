@@ -96,7 +96,7 @@ def verify():
 
 @app.route('/')
 def home():
-    print('Welcome to my website!')
+    return 'Welcome to my website!'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
