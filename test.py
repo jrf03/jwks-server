@@ -94,5 +94,9 @@ def verify():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
+@app.route('/')
+def home():
+    print('Welcome to my website!')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
