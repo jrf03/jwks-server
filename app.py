@@ -14,7 +14,7 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS keys (
                 kid TEXT PRIMARY KEY,
-                private_key TEXT NOT NULL
+                private_key TEXT NOT NULL,
                 expiry TIMESTAMP NOT NULL
             )
         ''')
