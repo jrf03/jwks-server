@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 database = 'keys.db'
 
+# Initializes the database for the keys
 def init_db():
     with sqlite3.connect(database) as conn:
         cursor = conn.cursor()
@@ -23,10 +24,12 @@ def init_db():
 init_db()
 expiry_duration = timedelta(minutes=30)
 
+# Generates an RSA key
 def generate_key():
     key = jwk.JWK.generate(kty = 'RSA', size=2048)
     return key
 
+# Stores a private key into the SQLite database
 def store_key(kid, private_key, expiry):
     with sqlite3.connect(database) as conn:
         cursor = conn.cursor()
@@ -35,6 +38,7 @@ def store_key(kid, private_key, expiry):
         ''', (kid, private_key.export_to_pem(private_key=True).decode(), expiry))
         conn.commit()
 
+# Retrieves a private key from the SQLite database
 def get_key():
     curr_time = datetime.now(datetime.timezone.utc)
     with sqlite3.connect(database) as conn:
@@ -54,6 +58,7 @@ def get_key():
     private_key = jwk.JWK.from_pem(private_key_str.encode())
     return kid, {'key': private_key, 'expiry': expire_time}
 
+# Handles the jwks keys
 @app.route('/jwks.json')
 def jwks():
     keys = []
@@ -70,6 +75,7 @@ def jwks():
     jwks = {"keys": keys}
     return jsonify(jwks)
 
+# Generates the JWT
 def generate_jwt(private_key, kid, expired=False):
     payload = {
         "sub": "user123",
@@ -81,6 +87,7 @@ def generate_jwt(private_key, kid, expired=False):
     token.make_signed_token(private_key)
     return token.serialize()
 
+# Handles the authentication of the keys/tokens
 @app.route('/auth', methods=['POST'])
 def authenticate():
     use_expired_key = request.args.get('use_expired_key', 'false').lower() == 'true'
@@ -101,6 +108,7 @@ def authenticate():
     token = generate_jwt(key_data['key'], kid, expired=use_expired_key)
     return jsonify({"token": token})
 
+# Verifies the tokens
 @app.route('/verify', methods=['POST'])
 def verify():
     data = request.get_json()
@@ -126,9 +134,11 @@ def verify():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
+# Default homepage for the website
 @app.route('/')
 def home():
     return 'Welcome to my website!'
 
+# Configures the way it runs (I had issues where the port was already being used)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
