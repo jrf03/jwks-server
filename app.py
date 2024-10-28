@@ -6,7 +6,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-database = 'keys.db'
+database = 'totally_not_my_privateKeys.db'
 
 # Initializes the database for the keys
 def init_db():
@@ -14,8 +14,8 @@ def init_db():
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS keys (
-                kid TEXT PRIMARY KEY,
-                private_key TEXT NOT NULL,
+                kid INTEGER PRIMARY KEY AUTOINCREMENT,
+                private_key BLOB NOT NULL,
                 expiry TIMESTAMP NOT NULL
             )
         ''')
@@ -59,7 +59,7 @@ def get_key():
     return kid, {'key': private_key, 'expiry': expire_time}
 
 # Handles the jwks keys
-@app.route('/jwks.json')
+@app.route('/.well-known/jwks.json')
 def jwks():
     keys = []
 
