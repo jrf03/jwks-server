@@ -10,6 +10,7 @@
     Type "flask run" to start the server.
 
 # notes
-    - I could not get the included test suite to run on my computer,
-    and there is a screenshot of what it outputs when I run it. Hopefully
-    you can see what I did wrong so you can help me fix it for next time!
+    - Not too long after submitting Part 2, I figured out how to get gradebot running.
+    I added a screenshot of the score for Part 2 that I got, as well as my score I got
+    more recently for Part 3. It looks like I screwed it up pretty bad in Part 3, so
+    I should have been more careful when making a bunch of changes.
